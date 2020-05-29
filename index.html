@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Spelling Bee</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <div id="game-wrapper">
+      <div id="text-display">
+        
+      </div>
+      <div id="board">
+        <div class="hex offset-top" id="hex-outer-1"></div>
+        <div class="hex offset-top" id="hex-outer-2"></div>
+        <div class="hex offset-top hidden" id="hex-outer-hidden-1"></div>
+        <div class="hex" id="hex-outer-3"></div/div>
+        <div class="hex" id="hex-center">A</div>
+        <div class="hex" id="hex-outer-4"></div>
+        <div class="hex offset-bot" id="hex-outer-5"></div>
+        <div class="hex offset-bot" id="hex-outer-6"></div>
+        <div class="hex offset-bot hidden" id="hex-outer-hidden-2"></div>
+      </div>
+      <div id="options">
+        <div class="option-button" id="delete-letter">DELETE</div>
+        <div class="option-button" id="submit">SUBMIT</div>
+      </div>
+    </div>
+    <script src="fileread.js"></script>
+    <script src="game.js"></script>
+  </body>
+</html>

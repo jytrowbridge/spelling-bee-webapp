@@ -1,0 +1,117 @@
+:root {
+  --hex-width: 10vw;  /* 200px; */
+  font-size: 1vw;
+}
+body {
+  background-color: cornsilk;
+  display: flex;
+  justify-content: center;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  
+}
+
+#game-wrapper {
+  border: 2px solid red;
+}
+
+/* **********************
+  HEX BOARD
+*/
+
+#board {
+  border: 2px solid green;
+  position: relative;
+  width: auto;
+  height: auto;
+  display: grid;
+  grid-template-columns: repeat(3, var(--hex-width));
+  justify-content: center;
+  align-content: center;
+  padding: 10px;
+}
+
+.hex {
+  /* position: absolute; */
+  height: var(--hex-width);
+  width: var(--hex-width);
+  background-color: gray;
+  clip-path: polygon(50% 0, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bolder;
+  font-size: 5rem;
+  color: white;
+}
+
+.hex:hover {
+  cursor: pointer;
+}
+
+.offset-top, .offset-bot {
+  position: relative;
+  left: 50%;
+}
+
+.offset-top {
+  top: 20%;
+}
+
+.offset-bot {
+  bottom: 20%;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+#hex-center {
+  background-color: gold;
+}
+
+/* **********************
+  TEXT DISPLAY
+*/
+
+#text-display {
+  height: 50px;
+  width: 100%;
+  padding-top: 10px;
+  border: 2px solid orange;
+  text-align: center;
+  font-size: 2rem;
+}
+
+/* **********************
+  OPTION BUTTONS
+*/
+
+#options {
+  display: flex;
+  justify-content: space-around;
+}
+
+.option-button {
+  width: 33%;
+  height: 75px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bolder;
+  font-size: 2.5rem;
+  border: 2px solid black;
+}
+
+.option-button:hover {
+  cursor: pointer;
+}
+
+#delete-letter {
+  background-color: gray;
+}
+
+#submit {
+  background-color: gold;
+}
