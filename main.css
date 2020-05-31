@@ -1,7 +1,19 @@
 :root {
-  --hex-width: 10vw;  /* 200px; */
-  font-size: 1vw;
+  /* --hex-width: 10vw; */
+  /* font-size: 1vw; */
+  --hex-width: 200px;  
+  font-size: 16px;
+} 
+/* i think add the media queries just on these vaues */
+
+@media only screen and (max-width: 768px) {
+  :root {
+    --hex-width: 20vw;
+    font-size: 8px;
+  } 
 }
+
+
 body {
   background-color: cornsilk;
   display: flex;
@@ -61,7 +73,7 @@ body {
   visibility: hidden;
 }
 
-#hex-center {
+#hex-0 {
   background-color: gold;
 }
 
@@ -75,6 +87,31 @@ body {
   padding-top: 10px;
   text-align: center;
   font-size: 2rem;
+  transition: all 50ms;
+  transition-timing-function: cubic-bezier(0, 2.14, 1, 1.53);
+
+  /* added to account for words found header */
+  margin-top: 75px;
+
+}
+
+.wrong {
+  transform: translateX(5px);
+}
+
+.valid {
+  transform: scale(1.1);
+}
+
+/* **********************
+  MESSAGE DIV
+*/
+
+#msg-display {
+  text-align: center;
+  height: 2rem;
+  font-size: 1.5rem;
+  font-style: italic;
 }
 
 /* **********************
@@ -87,8 +124,10 @@ body {
 }
 
 .option-button {
-  width: 33%;
-  height: 75px;
+  /* width: 33%; */
+  width: auto;
+  padding: 10px;
+  /* height: 75px; */
   border-radius: 10px;
   display: flex;
   justify-content: center;
@@ -109,4 +148,78 @@ body {
 
 #submit {
   background-color: gold;
+}
+
+/* **********************
+  WORDS FOUND DIV
+
+  the pop up over screen should really only be for mobile... actually whatever I like it
+
+*/
+
+#game-wrapper {
+  position: relative;
+}
+
+#words-found {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  overflow: hidden;
+  background-color: white;
+  border: 2px solid black; 
+  transition: all 1s;
+  border-radius: 15px;
+  margin-top: 10px;
+
+  /* display: flex;
+  flex-direction: column;
+  justify-content: stretch; */
+}
+
+#words-found-header-offset {
+  width:25px;
+}
+
+#words-found:hover {
+  cursor: pointer;
+}
+
+#words-found.close {
+  padding-top: 0px;
+  height: 50px;
+}
+
+.close > .arrow {
+  /* this isn't working for some reason */
+  transform: rotate(180deg);
+  color: red;
+}
+
+
+#words-found-header {
+  width: 100%;
+  height: 50px; 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#words-found-header > * {
+  color: black
+}
+
+
+.arrow {
+  margin-left: 15px;
+  font-size: 2rem;
+  width: 10px;
+}
+
+/* can maybe use a ::before tag to create arrow */
+
+#words-found-header-text {
+  font-size: 2rem;
+  font-weight: bolder;
 }
