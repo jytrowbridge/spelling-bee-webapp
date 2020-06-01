@@ -10,18 +10,26 @@ let game = {  // this needs to be a class so I can recreate it
   letters: [],
   minLen: 4,
   words: [],
+  score: 0,
 }
 
 /* *********
   Grab HTML elements
 */
 const vowels = ['A','E','I','O','U'];
+const gameWrapper = document.querySelector('#game-wrapper');
 const hexes = document.querySelectorAll('.hex');
 const textInput = document.querySelector('#text-display');
 const msgDiv = document.querySelector('#msg-display');
 const deleteBtn = document.querySelector('#delete-letter');
 const submitBtn = document.querySelector('#submit');
-const wordsFndDiv = document.querySelector('#words-found');
+const wordsFndDiv = document.querySelector('#words-found-wrapper');
+const wordsFndHeader = document.querySelector('#words-found-header');
+const wordsFndList = document.querySelector('#words-found-list');
+const arrow = document.querySelector('.arrow');
+const score = document.querySelector('#score-value');
+const lockWords = document.querySelector('#lock-words');
+const newGame = document.querySelector('#new-game');
 
 /* *********
   Functions
@@ -32,7 +40,6 @@ function addLetter () {
   const letter = game[id];
   const currText = textInput.textContent;
   textInput.textContent = currText + letter;
-  //this.style.color = 'black';
 }
 
 function getGameId(id) {
@@ -62,6 +69,7 @@ function getLetter() {
 
 function fillLetter(hex) {
   // Fill hex textcontent with random letter
+  // THIS SHOULD JUST FILL GAME OBJECT; SHOULD HAVE SEPARATE FUNCTIONALITY TO SET BOARD FROM OBJECT
   const id = hex.id;
   if (id.includes('hidden')) return;  // skip hidden hexes
   
@@ -119,8 +127,23 @@ function acceptWord(word) {
   setTimeout(() => {
     msgDiv.textContent = '';
   }, 2000);
-  game.words.push(word);
+  addWordFound(word);
   moveValid();
+}
+
+function addWordFound(word) {
+  game.score += getWordScore(word);
+  score.textContent = game.score;
+
+  game.words.push(word);
+  let wordDiv = document.createElement('div');
+  wordDiv.classList.add('word');
+  wordDiv.textContent = word;
+  wordsFndList.appendChild(wordDiv);
+}
+
+function getWordScore(word) {
+  return word.length - 3;
 }
 
 function getAllWords() {
@@ -175,12 +198,117 @@ console.table(allWords);
 
 
 // ------------
-wordsFndDiv.addEventListener('click', toggleWordsFnd)
+wordsFndHeader.addEventListener('click', toggleWordsFnd)
 
 function toggleWordsFnd() {
   if (wordsFndDiv.classList.contains('close')) {
     wordsFndDiv.classList.remove('close')
+    arrow.classList.remove('up')
   } else {
     wordsFndDiv.classList.add('close')
+    arrow.classList.add('up')
   }
 }
+
+// ----------------
+lockWords.addEventListener('change', toggleWordsLock);
+
+function toggleWordsLock() {
+  if (this.checked) {
+    wordsFndDiv.classList.add('locked');
+    gameWrapper.classList.add('locked');
+  } else {
+    wordsFndDiv.classList.remove('locked');
+    gameWrapper.classList.remove('locked');
+  }
+}
+
+// --------------------
+newGame.addEventListener('click', startNewGame);
+
+function startNewGame() {
+  const confRestart = confirm('Are you sure you want to start a new game?');
+  console.log(confRestart)
+  if (confRestart) {
+    game.score = 0;
+    game.words = [];
+    deleteChildren(wordsFndList);
+    score.textContent = '0';
+    allWords = fillLetters(hexes);
+    return allWords;
+  } else {
+    return;
+  }
+}
+
+function deleteChildren(node) {
+  while (node.hasChildNodes()) {
+    node.removeChild(node.lastChild);
+  }
+}
+
+// -------------------------
+// Click animation for hexes
+hexes.forEach(hex => hex.addEventListener('mousedown', hexAnimate));
+hexes.forEach(hex => hex.addEventListener('mouseup', hexUnAnimate));
+
+function hexAnimate() {
+  this.classList.add('clicked');
+}
+
+function hexUnAnimate() {
+  this.classList.remove('clicked');
+}
+
+// ------------------------
+// keyboard functionality
+window.addEventListener('keydown', processKey);
+
+function processKey(e) {
+  const key = e.key.toUpperCase();
+  if (game.letters.includes(key)) addLetterKey(key);
+  if (key == 'BACKSPACE') deleteLetter();
+  if (key == 'ENTER') submitWord();
+}
+
+function addLetterKey (letter) {
+  const currText = textInput.textContent;
+  textInput.textContent = currText + letter;
+}
+
+// ---------------------
+// COOKIES
+
+function saveGameToCookie() {
+  for (key in game) {
+    document.cookie = `${key}=${game[key]};`;
+  }
+  document.cookie = `${lockWords.id}=${lockWords.checked};`
+}
+
+function parseCookie(cookie) {
+  const cookieArr = cookie.split('; ');
+  const cookiePairs = cookieArr.map(cookie => cookie.split('='));
+  //return cookiePairs;
+
+  cookiePairs.forEach((cookiePair) => {
+    let key = cookiePair[0];
+    let value = cookiePair[1];
+    if (key in game) {
+      game[key] = value;
+    }
+  })
+
+  //setBoardFromGame()
+}
+
+function setBoardFromGame() {
+  // I think this is how I should implement above
+  for (key in game) {
+    return;
+  }
+}
+
+//const cookieStr = saveGameToCookie().join('; ');
+
+//document.cookie = "jaaaack";
