@@ -1,7 +1,7 @@
 /* *********
   Grab HTML elements
 */
-const vowels = ['A','E','I','O','U'];
+
 const gameWrapper = document.querySelector('#game-wrapper');
 const hexes = document.querySelectorAll('.hex');
 const textInput = document.querySelector('#text-display');
@@ -16,9 +16,26 @@ const score = document.querySelector('#score-value');
 const lockWords = document.querySelector('#lock-words');
 const newGame = document.querySelector('#new-game');
 
-/* *********
-  Functions
+
+/* ****************************************
+    Functions
+* ****************************************/
+
+/* ****************************
+    Word Input Logic
 */
+
+function processKey(e) {
+  const key = e.key.toUpperCase();
+  if (game.letters.includes(key)) addLetterKey(key);
+  if (key == 'BACKSPACE') deleteLetter();
+  if (key == 'ENTER') submitWord();
+}
+
+function addLetterKey (letter) {
+  const currText = textInput.textContent;
+  textInput.textContent = currText + letter;
+}
 
 function addLetter () {
   const id = game.getGameId(this.id);
@@ -74,6 +91,11 @@ function createWordDiv(word) {
   wordsFndList.appendChild(wordDiv);
 }
 
+
+/* ****************************
+  Animation Handling
+*/
+
 function removeTransition (e) {
   if (e.propertyName != 'transform') return;
   this.className = '';
@@ -87,17 +109,18 @@ function moveValid() {
   textInput.classList.add('valid')
 }
 
-/* *********
-  Add listeners
+function hexAnimate() {
+  this.classList.add('clicked');
+}
+
+function hexUnAnimate() {
+  this.classList.remove('clicked');
+}
+
+
+/* ****************************
+  Toggle Page Features
 */
-
-deleteBtn.addEventListener('click', deleteLetter);
-submitBtn.addEventListener('click', submitWord);
-textInput.addEventListener('transitionend', removeTransition)
-hexes.forEach(hex => hex.addEventListener('click', addLetter));
-
-// ------------
-wordsFndHeader.addEventListener('click', toggleWordsFnd)
 
 function toggleWordsFnd(animate=true) {
   if (!animate) {
@@ -116,9 +139,6 @@ function toggleWordsFnd(animate=true) {
   }
 }
 
-// ----------------
-lockWords.addEventListener('change', toggleWordsLock);
-
 function toggleWordsLock(saveCookie=true) {
   if (lockWords.checked) {
     wordsFndHeader.removeEventListener('click', toggleWordsFnd);
@@ -132,8 +152,10 @@ function toggleWordsLock(saveCookie=true) {
   if (saveCookie) saveGameToCookie();
 }
 
-// --------------------
-newGame.addEventListener('click', startNewGame);
+
+/* ****************************
+  New Game Logic
+*/
 
 function startNewGame() {
   const confRestart = confirm('Are you sure you want to start a new game?');
@@ -157,39 +179,10 @@ function deleteChildren(node) {
   }
 }
 
-// -------------------------
-// Click animation for hexes
 
-hexes.forEach(hex => hex.addEventListener('mousedown', hexAnimate));
-hexes.forEach(hex => hex.addEventListener('mouseup', hexUnAnimate));
-
-function hexAnimate() {
-  this.classList.add('clicked');
-}
-
-function hexUnAnimate() {
-  this.classList.remove('clicked');
-}
-
-// ------------------------
-// keyboard functionality
-
-window.addEventListener('keydown', processKey);
-
-function processKey(e) {
-  const key = e.key.toUpperCase();
-  if (game.letters.includes(key)) addLetterKey(key);
-  if (key == 'BACKSPACE') deleteLetter();
-  if (key == 'ENTER') submitWord();
-}
-
-function addLetterKey (letter) {
-  const currText = textInput.textContent;
-  textInput.textContent = currText + letter;
-}
-
-// ---------------------
-// COOKIES
+/* ****************************
+  Cookie Logic
+*/
 
 function saveGameToCookie() {
   const gameCookieArr = game.getCookieArr();
@@ -236,7 +229,13 @@ function applyCookie(cookie) {
   return game;
 }
 
+
+/* ****************************
+  Set Board State
+*/
+
 function setBoardFromGame(game) {
+  // Sets DOM elements to match attributes in Game Object
   // set hex text
   hexes.forEach(hex => {
     const gameId = game.getGameId(hex.id);
@@ -254,8 +253,32 @@ function setBoardFromGame(game) {
   })
 }
 
-// ----------
-// Initialize page
+
+/* ****************************
+  Add listeners
+*/
+
+// Letter/Word Input Listeners
+window.addEventListener('keydown', processKey);                       // Allow for keyboard entry
+hexes.forEach(hex => hex.addEventListener('click', addLetter));
+deleteBtn.addEventListener('click', deleteLetter);
+submitBtn.addEventListener('click', submitWord);
+hexes.forEach(hex => hex.addEventListener('mouseup', hexUnAnimate));  // click animation for hexes
+hexes.forEach(hex => hex.addEventListener('mousedown', hexAnimate));  // click animation for hexes
+textInput.addEventListener('transitionend', removeTransition)         // Undo transition for text box
+
+// Toggle Page Features Listeners
+wordsFndHeader.addEventListener('click', toggleWordsFnd)              // Show/hid words found div
+lockWords.addEventListener('change', toggleWordsLock);                // Lock/unlock words found div
+
+// New Game Listener
+newGame.addEventListener('click', startNewGame);
+
+
+/* ****************************
+  Initialize Page
+*/
+
 let allWords;
 let game;
 const cookie = document.cookie;
@@ -270,5 +293,3 @@ if (cookie == '') {
   game = applyCookie(cookie);
   allWords = game.getAllWords();
 }
-
-console.table(allWords);

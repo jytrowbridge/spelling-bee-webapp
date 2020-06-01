@@ -8,6 +8,9 @@ function getRndLet() {
   // Return random uppercase letter
   return String.fromCharCode(65 + getRndInteger(0,26));
 }
+
+const vowels = ['A','E','I','O','U'];
+
 class Game {
   constructor (vowel=false
               , hex0=''
@@ -17,8 +20,8 @@ class Game {
               , hex4=''
               , hex5=''
               , hex6=''
-              , letters=[]  //
-              , words=[]    //
+              , letters=[]  
+              , words=[]    
               , minLen=4
               , score=0
               , minWords=20
