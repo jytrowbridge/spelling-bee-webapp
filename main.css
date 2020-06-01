@@ -372,3 +372,7 @@ body {
 #show-words-list .found {
   font-weight: bolder;
 }
+
+#show-words-wrapper {
+  overflow: auto;
+}

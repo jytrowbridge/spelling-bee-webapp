@@ -219,6 +219,7 @@ function startNewGame() {
   console.log(confRestart)
   if (confRestart) {
     game = new Game();
+    textInput.textContent = '';
     toggleInput(game);              // add event listeners for letter input
     deleteChildren(wordsFndList);   // clear words found div
     deleteChildren(showWordsList);  // clear show words div
@@ -282,7 +283,7 @@ function applyCookie(cookie) {
   })
 
   // parse lists
-  game.words = game.words.split(',');
+  game.words = game.words.split(',').filter(e => e != '');
   game.letters = game.letters.split(',');
 
   // set dom elements from game attriutes
@@ -313,10 +314,12 @@ function setBoardFromGame(game) {
   
   // set words found
   const words = game.words;
-  words.forEach(word => {
-    createWordDiv(word);  // create entry in "words found" div
-    showWordFound(word);  // set word styling in "all words" div
-  })
+  if (words.length > 0) {
+    words.forEach(word => {
+      createWordDiv(word);  // create entry in "words found" div
+      showWordFound(word);  // set word styling in "all words" div
+    })
+  }
   toggleInput(game);
 }
 
