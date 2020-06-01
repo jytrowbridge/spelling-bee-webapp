@@ -27,8 +27,6 @@ function addLetter () {
   textInput.textContent = currText + letter;
 }
 
-
-
 function deleteLetter() {
   const text = textInput.textContent;
   textInput.textContent = text.slice(0, text.length - 1)
@@ -52,6 +50,10 @@ function alertWrong(message) {
 }
 
 function acceptWord(word, message) {
+  game.addWord(word);
+  createWordDiv(word);
+  score.textContent = game.score;
+
   msgDiv.textContent = message;
   setTimeout(() => {
     textInput.textContent = '';
@@ -59,14 +61,13 @@ function acceptWord(word, message) {
   setTimeout(() => {
     msgDiv.textContent = '';
   }, 2000);
-  addWordFound(word);
+  
   moveValid();
   saveGameToCookie();
 }
 
-function addWordFound(word) {
-  game.addWord(word);
-  score.textContent = game.score;
+function createWordDiv(word) {
+  // Create a div inside the words-found-list div
   let wordDiv = document.createElement('div');
   wordDiv.classList.add('word');
   wordDiv.textContent = word;
@@ -98,28 +99,37 @@ hexes.forEach(hex => hex.addEventListener('click', addLetter));
 // ------------
 wordsFndHeader.addEventListener('click', toggleWordsFnd)
 
-function toggleWordsFnd() {
+function toggleWordsFnd(animate=true) {
+  if (!animate) {
+    wordsFndDiv.classList.add('notransition');
+  }
+
   if (wordsFndDiv.classList.contains('close')) {
-    wordsFndDiv.classList.remove('close')
-    arrow.classList.remove('up')
+    wordsFndDiv.classList.remove('close');
   } else {
-    wordsFndDiv.classList.add('close')
-    arrow.classList.add('up')
+    wordsFndDiv.classList.add('close');
+  }
+
+  if (!animate) {
+    wordsFndDiv.offsetHeight; // Trigger a reflow, flushing the CSS changes
+    wordsFndDiv.classList.remove('notransition');
   }
 }
 
 // ----------------
 lockWords.addEventListener('change', toggleWordsLock);
 
-function toggleWordsLock() {
-  if (this.checked) {
+function toggleWordsLock(saveCookie=true) {
+  if (lockWords.checked) {
     wordsFndHeader.removeEventListener('click', toggleWordsFnd);
     gameWrapper.classList.add('locked');
+    arrow.style.transition = 'all 0ms';
   } else {
     wordsFndHeader.addEventListener('click', toggleWordsFnd)
     gameWrapper.classList.remove('locked');
+    arrow.style.transition = 'all 500ms';
   }
-  saveGameToCookie();
+  if (saveCookie) saveGameToCookie();
 }
 
 // --------------------
@@ -210,14 +220,9 @@ function applyCookie(cookie) {
 
     // set locked property
     if (key == 'lock-words' && value == 'true') {
-      // need to stick this all in a function ----------------------------------------------------
-      // need to stick this all in a function ----------------------------------------------------
-      wordsFndDiv.style.transition = 'all 0ms';
-      arrow.style.transition = 'all 0ms';
       lockWords.checked = true;
-      gameWrapper.classList.add('locked');
-      wordsFndHeader.removeEventListener('click', toggleWordsFnd)
-      toggleWordsFnd();
+      toggleWordsLock(saveCookie=false);
+      toggleWordsFnd(animate=false);
     }
   })
 
@@ -247,14 +252,6 @@ function setBoardFromGame(game) {
   words.forEach(word => {
     createWordDiv(word);
   })
-}
-
-function createWordDiv(word) {
-  // need to include this up in code
-  let wordDiv = document.createElement('div');
-  wordDiv.classList.add('word');
-  wordDiv.textContent = word;
-  wordsFndList.appendChild(wordDiv);
 }
 
 // ----------

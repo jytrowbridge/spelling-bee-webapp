@@ -201,7 +201,7 @@ body {
   transition-delay: 500ms;
 }
 
-.arrow.up {
+.close #words-found-header .arrow {
   transform: rotate(180deg);
 }
 
@@ -290,4 +290,11 @@ body {
 
 #hex-0.clicked {
   background-color: #efc900;
+}
+
+.notransition {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
 }
