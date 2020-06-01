@@ -163,19 +163,15 @@ function toggleWordsLock(saveCookie=true) {
     HELP/SHOW WORDS FUNCTIONS
 */
 
-
 function toggleVisible() {
   obj = this;
-  console.log(this);
   const div = obj.id == 'help' || obj.id == 'help-exit' ? helpDiv
             : obj.id == 'show-words' || obj.id == 'show-words-exit' ? showWordsDiv
             : undefined
   if (obj.id == 'show-words' && !game.locked) {
     const confShow = confirm('Are you sure you want to show all words?'
                 +'\nYou will be unable to submit any more words if you do.');
-    if (!confShow) {
-      return;
-    }
+    if (!confShow) return;
     lockGame();
   }
   if (div.classList.contains('close')) {
@@ -223,13 +219,12 @@ function startNewGame() {
   console.log(confRestart)
   if (confRestart) {
     game = new Game();
-    toggleInput(game);
-    deleteChildren(wordsFndList);
-    deleteChildren(showWordsList);
-    score.textContent = '0';
-    allWords = game.fillLetters();
-    setBoardFromGame(game);
-    saveGameToCookie();
+    toggleInput(game);              // add event listeners for letter input
+    deleteChildren(wordsFndList);   // clear words found div
+    deleteChildren(showWordsList);  // clear show words div
+    allWords = game.fillLetters();  // get new hex letters
+    setBoardFromGame(game);         // populate dom
+    saveGameToCookie();             // save new game to cookie
     return allWords;
   } else {
     return;
@@ -332,6 +327,7 @@ function setBoardFromGame(game) {
 
 // Letter/Word Input Listeners
 function toggleInput (game) {
+  // If game is locked, remove input event listeners; otherwise, add them
   if (game.locked) {
     window.removeEventListener('keydown', processKey);                       // Allow for keyboard entry
     hexes.forEach(hex => hex.removeEventListener('click', addLetter));
@@ -368,7 +364,7 @@ exitBtns.forEach(btn => btn.addEventListener('click', toggleVisible))
   Initialize Page
 */
 
-let allWords;
+let allWords;     // variable only used for convenience in console
 let game;
 const cookie = document.cookie;
 if (cookie == '') {
