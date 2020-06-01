@@ -193,10 +193,6 @@ deleteBtn.addEventListener('click', deleteLetter);
 submitBtn.addEventListener('click', submitWord);
 textInput.addEventListener('transitionend', removeTransition)
 hexes.forEach(hex => hex.addEventListener('click', addLetter));
-allWords = fillLetters(hexes);  // this occasionally doesn't work
-
-console.table(allWords);
-
 
 // ------------
 wordsFndHeader.addEventListener('click', toggleWordsFnd)
@@ -289,8 +285,7 @@ function saveGameToCookie() {
   document.cookie = `${lockWords.id}=${lockWords.checked};`
 }
 
-function applyCookie() {
-  const cookie = document.cookie;
+function applyCookie(cookie) {
   const cookieArr = cookie.split('; ');
   const cookiePairs = cookieArr.map(cookie => cookie.split('='));
   //return cookiePairs;
@@ -344,4 +339,18 @@ function createWordDiv(word) {
   wordsFndList.appendChild(wordDiv);
 }
 
-applyCookie()
+// ----------
+// Initialize page
+let allWords;
+const cookie = document.cookie;
+if (cookie == '') {
+  console.log('no cookie');
+  allWords = fillLetters(hexes);  // this occasionally doesn't work
+  saveGameToCookie();
+} else {
+  console.log('cookie found')
+  applyCookie(cookie);
+  allWords = getAllWords();
+}
+
+console.table(allWords);
