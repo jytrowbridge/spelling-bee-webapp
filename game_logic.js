@@ -15,6 +15,12 @@ const arrow = document.querySelector('.arrow');
 const score = document.querySelector('#score-value');
 const lockWords = document.querySelector('#lock-words');
 const newGame = document.querySelector('#new-game');
+const helpBtn = document.querySelector('#help')
+const helpDiv = document.querySelector('#help-wrapper')
+const showWordsBtn = document.querySelector('#show-words')
+const showWordsDiv = document.querySelector('#show-words-wrapper')
+const showWordsList = document.querySelector('#show-words-list')
+const exitBtns = document.querySelectorAll('.pop-up-div-exit')
 
 
 /* ****************************************
@@ -80,6 +86,7 @@ function acceptWord(word, message) {
   }, 2000);
   
   moveValid();
+  showWordFound(word);
   saveGameToCookie();
 }
 
@@ -152,6 +159,60 @@ function toggleWordsLock(saveCookie=true) {
   if (saveCookie) saveGameToCookie();
 }
 
+/* **********************
+    HELP/SHOW WORDS FUNCTIONS
+*/
+
+
+function toggleVisible() {
+  obj = this;
+  console.log(this);
+  const div = obj.id == 'help' || obj.id == 'help-exit' ? helpDiv
+            : obj.id == 'show-words' || obj.id == 'show-words-exit' ? showWordsDiv
+            : undefined
+  if (obj.id == 'show-words' && !game.locked) {
+    const confShow = confirm('Are you sure you want to show all words?'
+                +'\nYou will be unable to submit any more words if you do.');
+    if (!confShow) {
+      return;
+    }
+    lockGame();
+  }
+  if (div.classList.contains('close')) {
+    div.classList.remove('close')
+  } else {
+    div.classList.add('close')
+  }
+}
+
+function fillAllWords (game) {
+  const allWords = game.getAllWords();
+  allWords.forEach(word => createShowWordDiv(word));
+}
+
+function createShowWordDiv (word) {
+  const wordDiv = document.createElement('div');
+  wordDiv.classList.add('show-word');
+  wordDiv.id = 'show-' + word;
+  wordDiv.textContent = word;
+  showWordsList.appendChild(wordDiv);
+}
+
+function showWordFound (word) {
+  const id = '#show-' + word;
+  const wordDiv = document.querySelector(id);
+  wordDiv.textContent += '\t\u2713'
+  wordDiv.classList.add('found');
+}
+
+function lockGame() {
+  console.log('locking...')
+  game.locked = 'true';
+  textInput.textContent = '';
+  toggleInput(game);
+  saveGameToCookie();
+}
+
 
 /* ****************************
   New Game Logic
@@ -162,7 +223,9 @@ function startNewGame() {
   console.log(confRestart)
   if (confRestart) {
     game = new Game();
+    toggleInput(game);
     deleteChildren(wordsFndList);
+    deleteChildren(showWordsList);
     score.textContent = '0';
     allWords = game.fillLetters();
     setBoardFromGame(game);
@@ -203,7 +266,6 @@ function applyCookie(cookie) {
     let value = cookiePair[1];
 
     // set game Object
-    console.log(key)
     if (key in game) {
       game[key] = value;
     }
@@ -212,6 +274,11 @@ function applyCookie(cookie) {
     game.score = parseInt(game.score);
 
     // set locked property
+    if (key == 'locked') {
+      game.locked = value == 'true';
+    }
+
+    // set words found locked property
     if (key == 'lock-words' && value == 'true') {
       lockWords.checked = true;
       toggleWordsLock(saveCookie=false);
@@ -246,11 +313,16 @@ function setBoardFromGame(game) {
   // set score
   score.textContent = game.score;
   
+  // populate all words div
+  fillAllWords(game);
+  
   // set words found
   const words = game.words;
   words.forEach(word => {
-    createWordDiv(word);
+    createWordDiv(word);  // create entry in "words found" div
+    showWordFound(word);  // set word styling in "all words" div
   })
+  toggleInput(game);
 }
 
 
@@ -259,13 +331,25 @@ function setBoardFromGame(game) {
 */
 
 // Letter/Word Input Listeners
-window.addEventListener('keydown', processKey);                       // Allow for keyboard entry
-hexes.forEach(hex => hex.addEventListener('click', addLetter));
-deleteBtn.addEventListener('click', deleteLetter);
-submitBtn.addEventListener('click', submitWord);
-hexes.forEach(hex => hex.addEventListener('mouseup', hexUnAnimate));  // click animation for hexes
-hexes.forEach(hex => hex.addEventListener('mousedown', hexAnimate));  // click animation for hexes
-textInput.addEventListener('transitionend', removeTransition)         // Undo transition for text box
+function toggleInput (game) {
+  if (game.locked) {
+    window.removeEventListener('keydown', processKey);                       // Allow for keyboard entry
+    hexes.forEach(hex => hex.removeEventListener('click', addLetter));
+    deleteBtn.removeEventListener('click', deleteLetter);
+    submitBtn.removeEventListener('click', submitWord);
+    hexes.forEach(hex => hex.removeEventListener('mouseup', hexUnAnimate));  // click animation for hexes
+    hexes.forEach(hex => hex.removeEventListener('mousedown', hexAnimate));  // click animation for hexes
+    textInput.removeEventListener('transitionend', removeTransition)  
+  } else {
+    window.addEventListener('keydown', processKey);                       // Allow for keyboard entry
+    hexes.forEach(hex => hex.addEventListener('click', addLetter));
+    deleteBtn.addEventListener('click', deleteLetter);
+    submitBtn.addEventListener('click', submitWord);
+    hexes.forEach(hex => hex.addEventListener('mouseup', hexUnAnimate));  // click animation for hexes
+    hexes.forEach(hex => hex.addEventListener('mousedown', hexAnimate));  // click animation for hexes
+    textInput.addEventListener('transitionend', removeTransition)         // Undo transition for text box
+  }
+}
 
 // Toggle Page Features Listeners
 wordsFndHeader.addEventListener('click', toggleWordsFnd)              // Show/hid words found div
@@ -273,6 +357,11 @@ lockWords.addEventListener('change', toggleWordsLock);                // Lock/un
 
 // New Game Listener
 newGame.addEventListener('click', startNewGame);
+
+// help/show words Listeners
+helpBtn.addEventListener('click', toggleVisible)
+showWordsBtn.addEventListener('click', toggleVisible)
+exitBtns.forEach(btn => btn.addEventListener('click', toggleVisible))
 
 
 /* ****************************
@@ -283,13 +372,12 @@ let allWords;
 let game;
 const cookie = document.cookie;
 if (cookie == '') {
-  console.log('no cookie');
   game = new Game();
+  toggleInput(game);
   allWords = game.fillLetters();
   setBoardFromGame(game);
   saveGameToCookie();
 } else {
-  console.log('cookie found')
   game = applyCookie(cookie);
   allWords = game.getAllWords();
 }

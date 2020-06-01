@@ -26,6 +26,7 @@ class Game {
               , score=0
               , minWords=20
               , scoreAdjust=3
+              , locked=false
               ) {
     this.vowel = vowel;
     this.hex0 = hex0;
@@ -41,6 +42,7 @@ class Game {
     this.score = score;
     this.minWords = minWords;
     this.scoreAdjust = scoreAdjust;
+    this.locked = locked;
   }
 
   getWordScore (word) {
@@ -107,16 +109,14 @@ class Game {
       const key = 'hex' + i;
       cookieArr.push(`${key}=${this[key]}`);
     }
-
     // letters
     cookieArr.push(`letters=${this.letters}`);
-    
     // words
     cookieArr.push(`words=${this.words}`);
-    
     // score
     cookieArr.push(`score=${this.score}`);
-
+    // locked
+    cookieArr.push(`locked=${this.locked}`);
     return cookieArr;
   }
 

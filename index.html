@@ -20,11 +20,13 @@
         <div class="hex offset-bot" id="hex-outer-6"></div>
         <div class="hex offset-bot hidden" id="hex-outer-hidden-2"></div>
       </div>
-      <div id="options">
+      <div id="word-options-wrapper">
         <div class="option-button" id="delete-letter">DELETE</div>
         <div class="option-button" id="submit">SUBMIT</div>
       </div>
-      <div id="new-game-wrapper">
+      <div id="options-wrapper">
+        <div id="help" class="option-button">HELP</div>
+        <div id="show-words" class="option-button">ALL WORDS</div>
         <div id="new-game" class="option-button">NEW GAME</div>
       </div>
       <div id="words-found-wrapper" class="close">
@@ -43,6 +45,43 @@
         </div>
         <div id="words-found-list">
           <!-- <div class="word">test</div> -->
+        </div>
+      </div>
+      <div id="show-words-wrapper" class="close pop-up-div">
+        <div id="show-words-header" class="pop-up-div-header">
+          <div class="pop-up-div-header-offset"></div>
+          <div id="show-words-header-text" class="pop-up-div-header-text">
+            ALL WORDS
+          </div>
+          <div id="show-words-exit" class="pop-up-div-exit">
+            X
+          </div>
+        </div>
+        <div id="show-words-list" class="pop-up-div-text">
+          <!-- <div class="show-word found">test</div> -->
+        </div>
+      </div>
+      <div id="help-wrapper" class="close pop-up-div">
+        <div id="help-header" class="pop-up-div-header">
+          <div class="pop-up-div-header-offset"></div>
+          <div id="help-header-text" class="pop-up-div-header-text">
+            HELP
+          </div>
+          <div id="help-exit" class="pop-up-div-exit">
+            X
+          </div>
+        </div>
+        <div id="help-text" class="pop-up-div-text">
+          Using the letters in the hexagons, create as many words as you can.
+          <br>
+          <br>
+          Each letter can be used multiple times per word.
+          <br>
+          <br>
+          The letter in the center hexagon must be used at least once per word.
+          <br>
+          <br>
+          Each word must be at least 4 letters long.
         </div>
       </div>
     </div>
