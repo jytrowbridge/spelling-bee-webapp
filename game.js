@@ -129,6 +129,7 @@ function acceptWord(word) {
   }, 2000);
   addWordFound(word);
   moveValid();
+  saveGameToCookie();
 }
 
 function addWordFound(word) {
@@ -215,12 +216,13 @@ lockWords.addEventListener('change', toggleWordsLock);
 
 function toggleWordsLock() {
   if (this.checked) {
-    wordsFndDiv.classList.add('locked');
+    wordsFndHeader.removeEventListener('click', toggleWordsFnd);
     gameWrapper.classList.add('locked');
   } else {
-    wordsFndDiv.classList.remove('locked');
+    wordsFndHeader.addEventListener('click', toggleWordsFnd)
     gameWrapper.classList.remove('locked');
   }
+  saveGameToCookie();
 }
 
 // --------------------
@@ -235,6 +237,7 @@ function startNewGame() {
     deleteChildren(wordsFndList);
     score.textContent = '0';
     allWords = fillLetters(hexes);
+    saveGameToCookie();
     return allWords;
   } else {
     return;
@@ -286,7 +289,8 @@ function saveGameToCookie() {
   document.cookie = `${lockWords.id}=${lockWords.checked};`
 }
 
-function parseCookie(cookie) {
+function applyCookie() {
+  const cookie = document.cookie;
   const cookieArr = cookie.split('; ');
   const cookiePairs = cookieArr.map(cookie => cookie.split('='));
   //return cookiePairs;
@@ -297,18 +301,47 @@ function parseCookie(cookie) {
     if (key in game) {
       game[key] = value;
     }
+    // set locked property
+    if (key == 'lock-words' && value == 'true') {
+      // need to stick this all in a function
+      wordsFndDiv.style.transition = 'all 0ms';
+      arrow.style.transition = 'all 0ms';
+      lockWords.checked = true;
+      gameWrapper.classList.add('locked');
+      wordsFndHeader.removeEventListener('click', toggleWordsFnd)
+      toggleWordsFnd();
+    }
   })
 
-  //setBoardFromGame()
+  // parse lists
+  game.words = game.words.split(',');
+  game.letters = game.letters.split(',');
+
+  setBoardFromGame()
 }
 
 function setBoardFromGame() {
-  // I think this is how I should implement above
-  for (key in game) {
-    return;
-  }
+  // set hex text
+  hexes.forEach(hex => {
+    const gameId = getGameId(hex.id);
+    const letter = game[gameId];
+    hex.textContent = letter;
+  })
+
+  score.textContent = game.score;
+  
+  // set words found
+  const words = game.words;
+  words.forEach(word => {
+    createWordDiv(word);
+  })
 }
 
-//const cookieStr = saveGameToCookie().join('; ');
+function createWordDiv(word) {
+  let wordDiv = document.createElement('div');
+  wordDiv.classList.add('word');
+  wordDiv.textContent = word;
+  wordsFndList.appendChild(wordDiv);
+}
 
-//document.cookie = "jaaaack";
+applyCookie()

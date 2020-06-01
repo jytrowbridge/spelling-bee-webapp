@@ -158,14 +158,6 @@ body {
   position: relative;
 }
 
-#game-wrapper.locked {
-  right: 25vw;
-}
-
-#words-found-wrapper.locked {
-  left: 125%;
-}
-
 #words-found-wrapper {
   position: absolute;
   width: 100%;
@@ -247,6 +239,22 @@ body {
 
 #lock-words-wrapper {
   margin-left: 50px;
+}
+
+#game-wrapper.locked {
+  right: 25vw;
+}
+
+.locked > #words-found-wrapper {
+  left: 125%;
+}
+
+.locked > #words-found-wrapper #words-found-header:hover {
+  cursor: auto;
+}
+
+.locked > #words-found-wrapper #words-found-header .arrow {
+  visibility: hidden;
 }
 
 @media only screen and (max-width: 768px) {
