@@ -3,13 +3,13 @@
   <head>
     <title>Spelling Bee</title>
     <link rel="stylesheet" type="text/css" href="main.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
   </head>
   <body>
     <div id="game-wrapper">
       <div id="text-display"></div>
       <div id="msg-display"></div>
-      <div id="board" class="noselect">
+      <div id="board">
         <div class="hex offset-top" id="hex-outer-1"></div>
         <div class="hex offset-top" id="hex-outer-2"></div>
         <div class="hex offset-top hidden" id="hex-outer-hidden-1"></div>
@@ -20,14 +20,14 @@
         <div class="hex offset-bot" id="hex-outer-6"></div>
         <div class="hex offset-bot hidden" id="hex-outer-hidden-2"></div>
       </div>
-      <div id="word-options-wrapper" class="noselect">
-        <div class="option-button" id="delete-letter">DELETE</div>
-        <div class="option-button" id="submit">SUBMIT</div>
+      <div id="word-options-wrapper">
+        <div class="option-button noselect" id="delete-letter">DELETE</div>
+        <div class="option-button noselect" id="submit">SUBMIT</div>
       </div>
-      <div id="options-wrapper" class="noselect">
-        <div id="help" class="option-button">HELP</div>
-        <div id="show-words" class="option-button">ALL WORDS</div>
-        <div id="new-game" class="option-button">NEW GAME</div>
+      <div id="options-wrapper">
+        <div id="help" class="option-button noselect">HELP</div>
+        <div id="show-words" class="option-button noselect">ALL WORDS</div>
+        <div id="new-game" class="option-button noselect">NEW GAME</div>
       </div>
       <div id="words-found-wrapper" class="close">
         <div id="words-found-header">
