@@ -32,9 +32,6 @@ const exitBtns = document.querySelectorAll('.pop-up-div-exit')
 */
 
 function processKey(e) {
-
-  e.preventDefault();
-
   
   const key = e.key.toUpperCase();
   if (game.letters.includes(key)) {
@@ -43,6 +40,7 @@ function processKey(e) {
     hex.classList.add('clicked');
     window.addEventListener('keyup', () => hex.classList.remove('clicked'));
   } else if (key == 'BACKSPACE') {
+    e.preventDefault(); // prevent redirect
     deleteLetter();
   } else if (key == 'ENTER') {
     submitWord();
