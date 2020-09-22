@@ -265,15 +265,7 @@ function applyCookie(cookie) {
     if (key in game) {
       game[key] = value;
     }
-
-    // set values to int
-    game.score = parseInt(game.score);
-
-    // set locked property
-    if (key == 'locked') {
-      game.locked = value == 'true';
-    }
-
+    
     // set words found locked property
     if (key == 'lock-words' && value == 'true') {
       lockWords.checked = true;
@@ -282,8 +274,14 @@ function applyCookie(cookie) {
     }
   })
 
+  // set boolean from string
+  game.locked = game.locked == 'true';
+  
+  // set values to int
+  game.score = parseInt(game.score);
+
   // parse lists
-  game.words = game.words.split(',').filter(e => e != '');
+  game.words = game.words.split(',').filter(e => e != '');  // prevent empty string from creating non-empty list
   game.letters = game.letters.split(',');
 
   // set dom elements from game attriutes
