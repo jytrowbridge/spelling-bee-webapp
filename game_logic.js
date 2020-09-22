@@ -35,10 +35,18 @@ function processKey(e) {
 
   e.preventDefault();
 
+  
   const key = e.key.toUpperCase();
-  if (game.letters.includes(key)) addLetterKey(key);
-  if (key == 'BACKSPACE') deleteLetter();
-  if (key == 'ENTER') submitWord();
+  if (game.letters.includes(key)) {
+    const hex = [...hexes].filter(hex => hex.dataset.letter == key)[0];
+    addLetterKey(key);
+    hex.classList.add('clicked');
+    window.addEventListener('keyup', () => hex.classList.remove('clicked'));
+  } else if (key == 'BACKSPACE') {
+    deleteLetter();
+  } else if (key == 'ENTER') {
+    submitWord();
+  }
 }
 
 function addLetterKey (letter) {
@@ -305,6 +313,7 @@ function setBoardFromGame(game) {
     const gameId = game.getGameId(hex.id);
     const letter = game[gameId];
     hex.textContent = letter;
+    hex.dataset.letter = letter;
   })
 
   // set score
