@@ -32,6 +32,9 @@ const exitBtns = document.querySelectorAll('.pop-up-div-exit')
 */
 
 function processKey(e) {
+
+  e.preventDefault();
+
   const key = e.key.toUpperCase();
   if (game.letters.includes(key)) addLetterKey(key);
   if (key == 'BACKSPACE') deleteLetter();
