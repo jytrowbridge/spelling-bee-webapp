@@ -15,7 +15,7 @@
 
 
 body {
-  background-color: cornsilk;
+  background-color: white;
   display: flex;
   justify-content: center;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -242,7 +242,7 @@ body {
 }
 
 #game-wrapper.locked {
-  right: 25vw;
+  right: 20vw;
 }
 
 .locked > #words-found-wrapper {
